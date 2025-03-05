@@ -150,43 +150,92 @@ const addContentToCourse = async (req, res) => {
 };
 
 
-const editContentInCourse = async (req, res) => {
+const addContentsToCourse = async (req, res) => {
   try {
     const courseId = req.params.id;
-    const contentId = req.params.contentId;
-    const { sectionTitle, lessons } = req.body;
+    let sections = req.body; // Can be a single object or an array
 
+    // Ensure `sections` is always an array
+    if (!Array.isArray(sections)) {
+      sections = [sections];
+    }
+
+    // Find the course
     const course = await Course.findById(courseId);
     if (!course) {
-      return res
-        .status(404)
-        .json({ status: "error", message: "Course not found" });
+      return res.status(404).json({
+        status: "error",
+        message: "Course not found",
+      });
     }
 
-    const content = course.contents.id(contentId);
-    if (!content) {
-      return res
-        .status(404)
-        .json({ status: "error", message: "Content not found" });
-    }
+    // Assign section numbers based on existing sections
+    const startingSectionNumber = course.contents.length + 1;
 
-    content.sectionTitle = sectionTitle || content.sectionTitle;
-    content.lessons = lessons || content.lessons;
+    const newSections = sections.map((section, index) => ({
+      sectionTitle: section.sectionTitle,
+      releaseDate: section.releaseDate,
+      lessons: section.lessons,
+      sectionNumber: startingSectionNumber + index,
+    }));
 
+    // Add sections to course
+    course.contents.push(...newSections);
+
+    // Save updated course
     await course.save();
 
     res.status(200).json({
       status: "success",
-      message: "Content updated successfully",
+      message: "Contents added successfully",
       course,
     });
   } catch (error) {
-    console.log(error.message);
-    res
-      .status(400)
-      .json({ status: "error", message: "Failed to update content", error });
+    res.status(400).json({
+      status: "error",
+      message: "Failed to add content",
+      error: error.message,
+    });
   }
 };
+
+// const editContentInCourse = async (req, res) => {
+//   try {
+//     const courseId = req.params.id;
+//     const contentId = req.params.contentId;
+//     const { sectionTitle, lessons } = req.body;
+
+//     const course = await Course.findById(courseId);
+//     if (!course) {
+//       return res
+//         .status(404)
+//         .json({ status: "error", message: "Course not found" });
+//     }
+
+//     const content = course.contents.id(contentId);
+//     if (!content) {
+//       return res
+//         .status(404)
+//         .json({ status: "error", message: "Content not found" });
+//     }
+
+//     content.sectionTitle = sectionTitle || content.sectionTitle;
+//     content.lessons = lessons || content.lessons;
+
+//     await course.save();
+
+//     res.status(200).json({
+//       status: "success",
+//       message: "Content updated successfully",
+//       course,
+//     });
+//   } catch (error) {
+//     console.log(error.message);
+//     res
+//       .status(400)
+//       .json({ status: "error", message: "Failed to update content", error });
+//   }
+// };
 
 const deleteCourse = async (req, res) => {
   try {

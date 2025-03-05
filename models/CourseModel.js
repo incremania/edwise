@@ -36,6 +36,7 @@ const CourseSchema = new mongoose.Schema(
         lessons: [
           {
             lessonTitle: { type: String, required: true },
+            documentUrl:  { type: String, required: false },
             videoUrl: {
               type: String,
               required: true,

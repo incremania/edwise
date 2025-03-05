@@ -41,6 +41,7 @@ router
     authorizePermissions("admin"),
     addContentToCourse
   )
+  
   .patch(
     "/edit-content/:id/:contentId",
     authenticateUser,

@@ -1,43 +1,41 @@
 all routes in api
 
-POST: http://localhost:3000/api/register
-POST: http://localhost:3000/api/login
-GET: http://localhost:3000/api/get-user-details
-POST: http://localhost:3000/api/enroll/:courseId
-GET: http://localhost:3000/api/suggest-jobs
-GET: http://localhost:3000/api/get-enrolled-courses
-GET: http://localhost:3000/api/all-courses
-GET: http://localhost:3000/api/suggested-courses
-POST: http://localhost:3000/api/create-course
-PATCH: http://localhost:3000/api/edit-course/:id
-POST: http://localhost:3000/api/add-content/:id
-PATCH: http://localhost:3000/api/edit-content/:id/:contentId
-DELETE: http://localhost:3000/api/delete-course/:id
-POST: http://localhost:3000/api/courses/:courseId/quizzes
-POST: http://localhost:3000/api/courses/:courseId/quizzes/:quizId/submit
-PATCH: http://localhost:3000/api/update/user
-PATCH: http://localhost:3000/api/courses/:courseId/sections/:sectionTitle/lessons/:lessonTitle/watched",
-GET:  http://localhost:3000/api/courses/:courseId/progress
-GET:  http://localhost:3000/api/courses/:courseId
-POST:  http://localhost:3000/api/forgot-password
-PATCH: http://localhost:3000/api/reset-password/:token
-GET:  http://localhost:3000/api/suggest-job/interest
-PATCH http://localhost:3000/api/change-password
+POST: http: //localhost:3000/api/register
+POST: http: //localhost:3000/api/login
+GET: http: //localhost:3000/api/get-user-details
+POST: http: //localhost:3000/api/enroll/:courseId
+GET: http: //localhost:3000/api/suggest-jobs
+GET: http: //localhost:3000/api/get-enrolled-courses
+GET: http: //localhost:3000/api/all-courses
+GET: http: //localhost:3000/api/suggested-courses
+POST: http: //localhost:3000/api/create-course
+PATCH: http: //localhost:3000/api/edit-course/:id
+POST: http: //localhost:3000/api/add-content/:id
+PATCH: http: //localhost:3000/api/edit-content/:id/:contentId
+DELETE: http: //localhost:3000/api/delete-course/:id
+POST: http: //localhost:3000/api/courses/:courseId/quizzes
+POST: http: //localhost:3000/api/courses/:courseId/quizzes/:quizId/submit
+PATCH: http: //localhost:3000/api/update/user
+PATCH: http: //localhost:3000/api/courses/:courseId/sections/:sectionTitle/lessons/:lessonTitle/watched",
+GET:  http: //localhost:3000/api/courses/:courseId/progress
+GET:  http: //localhost:3000/api/courses/:courseId
+POST:  http: //localhost:3000/api/forgot-password
+PATCH: http: //localhost:3000/api/reset-password/:token
+GET:  http: //localhost:3000/api/suggest-job/interest
+PATCH http: //localhost:3000/api/change-password
 
 
 1. User Registeration
-   POST: http://localhost:3000/api/register
+   POST: http: //localhost:3000/api/register
    Request Format: multipart/form-data
 
 payload = {
     "password": "emailkff@ret.com2WWd",
     "email": "emailkd@rfrrrfet4.cf",
     "fullName": "okiki",
-     "interests": [
-            "Machine Learning"
-          
-        ]
-
+    "interests": [
+        "Machine Learning"
+    ]
 }
 result = {
     "status": "success",
@@ -52,128 +50,130 @@ result = {
     }
 }
 2. User Login
-   POST: http://localhost:3000/api/login
+   POST: http: //localhost:3000/api/login
 
-payload = {  
-"email": "user@user25.com",
-"password": "Admin@admin1.com"
+payload = {
+    "email": "user@user25.com",
+    "password": "Admin@admin1.com"
 }
 
 result = {
-"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImVtYWlsIjoidXNlckB1c2VyMjUuY29tIiwidXNlcklkIjoiNjc3NzlmZWVlZWMxNzgzZjhmZDg4ODM5IiwiaW50ZXJlc3RzIjpbIk1hY2hpbmUgTGVhcm5pbmciLCJSb2JvdGljcyJdLCJyb2xlIjoidXNlciIsImNyZWF0ZWRBdCI6IjIwMjUtMDEtMDNUMDg6Mjk6MzQuNzc3WiIsInVwZGF0ZWRBdCI6IjIwMjUtMDEtMDNUMDg6Mjk6MzQuNzc3WiJ9LCJpYXQiOjE3MzU4OTMyMzUsImV4cCI6MTczNjE1MjQzNX0.kfP6Rxf4ufQlYlv8cEtbHGmq052ES191sKf2AYeMlg8",
-"status": "success",
-"message": "Login successful",
-"user": {
-"email": "user@user25.com",
-"userId": "67779feeeec1783f8fd88839",
-"interests": [
-"Machine Learning",
-"Robotics"
-],
-"role": "user",
-"createdAt": "2025-01-03T08:29:34.777Z",
-"updatedAt": "2025-01-03T08:29:34.777Z"
-}
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImVtYWlsIjoidXNlckB1c2VyMjUuY29tIiwidXNlcklkIjoiNjc3NzlmZWVlZWMxNzgzZjhmZDg4ODM5IiwiaW50ZXJlc3RzIjpbIk1hY2hpbmUgTGVhcm5pbmciLCJSb2JvdGljcyJdLCJyb2xlIjoidXNlciIsImNyZWF0ZWRBdCI6IjIwMjUtMDEtMDNUMDg6Mjk6MzQuNzc3WiIsInVwZGF0ZWRBdCI6IjIwMjUtMDEtMDNUMDg6Mjk6MzQuNzc3WiJ9LCJpYXQiOjE3MzU4OTMyMzUsImV4cCI6MTczNjE1MjQzNX0.kfP6Rxf4ufQlYlv8cEtbHGmq052ES191sKf2AYeMlg8",
+    "status": "success",
+    "message": "Login successful",
+    "user": {
+        "email": "user@user25.com",
+        "userId": "67779feeeec1783f8fd88839",
+        "interests": [
+            "Machine Learning",
+            "Robotics"
+        ],
+        "role": "user",
+        "createdAt": "2025-01-03T08:29:34.777Z",
+        "updatedAt": "2025-01-03T08:29:34.777Z"
+    }
 }
 
 3. Get user details
-   GET: http://localhost:3000/api/get-user-details
+   GET: http: //localhost:3000/api/get-user-details
    Header: Authorization: Bearer Token
 
 result = {
-"status": "success",
-"user": {
+    "status": "success",
+    "user": {
 "\_id": "6776a7e43b32682c8606297e",
-"fullName": "John Doe",
-"email": "admin@admin.com",
-"role": "admin",
-"interests": [
-"Machine Learning",
-"Robotics"
-],
-"enrolledCourses": [
-{
-"_id": "6776aaec1a7ee9883cfa77a0",
-"title": "string",
-"description": "string"
-}
-],
-"createdAt": "2025-01-02T14:51:16.074Z",
-"updatedAt": "2025-01-03T07:58:45.030Z",
+        "fullName": "John Doe",
+        "email": "admin@admin.com",
+        "role": "admin",
+        "interests": [
+            "Machine Learning",
+            "Robotics"
+        ],
+        "enrolledCourses": [
+            {
+                "_id": "6776aaec1a7ee9883cfa77a0",
+                "title": "string",
+                "description": "string"
+            }
+        ],
+        "createdAt": "2025-01-02T14:51:16.074Z",
+        "updatedAt": "2025-01-03T07:58:45.030Z",
 "\_\_v": 1
-}
+    }
 }
 
 4. For user to enroll in a particular course
-   POST: http://localhost:3000/api/enroll/:courseId
+   POST: http: //localhost:3000/api/enroll/:courseId
    Header: Authorization: Bearer Token
 
 5. To suggest jobs for User based on enrolled course
-   GET: http://localhost:3000/api/suggest-jobs
+   GET: http: //localhost:3000/api/suggest-jobs
    Header: Authorization: Bearer Token
 
 6. TO get courses that user is enrolled in
-   GET: http://localhost:3000/api/get-enrolled-courses
+   GET: http: //localhost:3000/api/get-enrolled-courses
    Header: Authorization: Bearer Token
 
 7. To get all courses on the app
-   GET: http://localhost:3000/api/all-courses
+   GET: http: //localhost:3000/api/all-courses
    No auth required
 
 8. To suggest courses for user based on their interest
-   GET: http://localhost:3000/api/suggested-courses
+   GET: http: //localhost:3000/api/suggested-courses
    Header: Authorization: Bearer Token
 
 9. To create course(Admin only)
    Log in as admin to use Admin Only Route
-   admin details:
-   "email": "admin@admin.com",
-   "password": "Admin@admin1.com",
+   admin details: "email": "admin@admin.com",
+    "password": "Admin@admin1.com",
 
-POST: http://localhost:3000/api/create-course
+POST: http: //localhost:3000/api/create-course
 Header: Authorization: Bearer Token
 
 payload: {
-"price": 45,
-"objectives": "string",
-"description": "string",
-"title": "string",
-"duration": 10,
-"enrolledStudents": 45,
-"teacher": "string",
-"targetAudience": ["Machine Learning", "AI in Gaming"],
-"imageUrl": "https//image.com"
+    "price": 45,
+    "objectives": "string",
+    "description": "string",
+    "title": "string",
+    "duration": 10,
+    "enrolledStudents": 45,
+    "teacher": "string",
+    "targetAudience": [
+        "Machine Learning",
+        "AI in Gaming"
+    ],
+    "imageUrl": "https//image.com"
 }
 
 result: {
-"status": "success",
-"message": "Course created successfully",
-"course": {
-"title": "string",
-"duration": 10,
-"teacher": "string",
-"enrolledStudents": 45, //this increments when user enroll in course
-"description": "string",
-"objectives": "string",
-"targetAudience": [
-"Machine Learning",
-"AI in Gaming"
-],
-"price": 45,
-"certificate": true,
-"progress": 0,
-"isActive": true,
+    "status": "success",
+    "message": "Course created successfully",
+    "course": {
+        "title": "string",
+        "duration": 10,
+        "teacher": "string",
+        "enrolledStudents": 45, //this increments when user enroll in course
+        "description": "string",
+        "objectives": "string",
+        "targetAudience": [
+            "Machine Learning",
+            "AI in Gaming"
+        ],
+        "price": 45,
+        "certificate": true,
+        "progress": 0,
+        "isActive": true,
 "\_id": "6777a4827e49b646cf8f78f2",
-"contents": [],
-"quizzes": [],
-"createdAt": "2025-01-03T08:49:06.091Z",
-"updatedAt": "2025-01-03T08:49:06.091Z",
+        "contents": [],
+        "quizzes": [],
+        "createdAt": "2025-01-03T08:49:06.091Z",
+        "updatedAt": "2025-01-03T08:49:06.091Z",
 "\_\_v": 0
-}
+    }
 }
 
 10. To Edit a course
-    PATCH: http://localhost:3000/api/edit-course/:id (:id is the course Id)
+    PATCH: http: //localhost:3000/api/edit-course/:id (:id is the course Id)
     payload = {
     "price": 45,
     "objectives": "string edited",
@@ -182,372 +182,427 @@ result: {
     "duration": 10,
     "enrolledStudents": 45,
     "teacher": "string",
-    "targetAudience": ["Machine Learning", "AI in Gaming"]
-    }
+    "targetAudience": [
+        "Machine Learning",
+        "AI in Gaming"
+    ]
+}
 
 result = {
-"status": "success",
-"message": "Course updated successfully",
-"course": {
+    "status": "success",
+    "message": "Course updated successfully",
+    "course": {
 "\_id": "6777a4827e49b646cf8f78f2",
-"title": "string edited",
-"duration": 10,
-"teacher": "string",
-"enrolledStudents": 45,
-"description": "string edited",
-"objectives": "string edited",
-"targetAudience": [
-"Machine Learning",
-"AI in Gaming"
-],
-"price": 45,
-"certificate": true,
-"progress": 0,
-"isActive": true,
-"contents": [],
-"quizzes": [],
-"createdAt": "2025-01-03T08:49:06.091Z",
-"updatedAt": "2025-01-03T08:53:49.795Z",
+        "title": "string edited",
+        "duration": 10,
+        "teacher": "string",
+        "enrolledStudents": 45,
+        "description": "string edited",
+        "objectives": "string edited",
+        "targetAudience": [
+            "Machine Learning",
+            "AI in Gaming"
+        ],
+        "price": 45,
+        "certificate": true,
+        "progress": 0,
+        "isActive": true,
+        "contents": [],
+        "quizzes": [],
+        "createdAt": "2025-01-03T08:49:06.091Z",
+        "updatedAt": "2025-01-03T08:53:49.795Z",
 "\_\_v": 0
-}
+    }
 }
 
 11. Add content to a course
-    POST: http://localhost:3000/api/add-content/:id (:id is the course Id)
+    POST: http: //localhost:3000/api/add-content/:id (:id is the course Id)
 
-payload: {
-"sectionTitle": "Basics of ML",
-// "sectionNumber": 1,
-"releaseDate": "2025-01-06", // Corrected release date
-"lessons": [
-{
-"lessonTitle": "What is Machine Learning?",
-"videoUrl": "https://example.com/video1.mp4",
-"duration": 10
-},
-{
-"lessonTitle": "History of ML",
-"videoUrl": "https://example.com/video2.mp4",
-"duration": 12
-},
-{
-"lessonTitle": "Types of Machine Learning",
-"videoUrl": "https://example.com/video3.mp4",
-"duration": 15
-},
-{
-"lessonTitle": "Applications of ML",
-"videoUrl": "https://example.com/video4.mp4",
-"duration": 10
-}
-]
-}
+payload:[
+    {
+        "sectionTitle": "Basics of ML",
+        // "sectionNumber": 1,
+        "releaseDate": "2025-01-06", // Corrected release date
+        "lessons": [
+            {
+                "lessonTitle": "What is Machine Learning?",
+                "videoUrl": "https://example.com/video1.mp4",
+                "duration": 10
+            },
+            {
+                "lessonTitle": "History of ML",
+                "videoUrl": "https://example.com/video2.mp4",
+                "duration": 12
+            },
+            {
+                "lessonTitle": "Types of Machine Learning",
+                "videoUrl": "https://example.com/video3.mp4",
+                "duration": 15
+            },
+            {
+                "lessonTitle": "Applications of ML",
+                "videoUrl": "https://example.com/video4.mp4",
+                "duration": 10
+            }
+        ]
+    },
+    {
+        "sectionTitle": "Basics of ML",
+        // "sectionNumber": 1,
+        "releaseDate": "2025-01-06", // Corrected release date
+        "lessons": [
+            {
+                "lessonTitle": "What is Machine Learning?",
+                "videoUrl": "https://example.com/video1.mp4",
+                "duration": 10
+            },
+            {
+                "lessonTitle": "History of ML",
+                "videoUrl": "https://example.com/video2.mp4",
+                "duration": 12
+            },
+            {
+                "lessonTitle": "Types of Machine Learning",
+                "videoUrl": "https://example.com/video3.mp4",
+                "duration": 15
+            },
+            {
+                "lessonTitle": "Applications of ML",
+                "videoUrl": "https://example.com/video4.mp4",
+                "duration": 10
+            }
+        ]
+    },
+] 
 
 result: {
-"status": "success",
-"message": "Content added successfully",
-"course": {
-"id": "677c2a5bb75fd0225ac54004",
-"title": "Machine Learning for Beginners",
-"duration": 40,
-"teacher": "Dr. John Doe",
-"enrolledStudents": 50,
-"description": "An introductory course to Machine Learning",
-"objectives": "Learn the basics of ML, regression, classification, etc.",
-"targetAudience": [
-"Machine Learning",
-"AI in Gaming"
-],
-"language": "english",
-"level": "beginner",
-"price": 199,
-"certificate": true,
-"imageUrl": "https://example.com/course-image1.jpg",
-"progress": 0,
-"isActive": true,
-"contents": [
-{
-"sectionNumber": 1,
-"sectionTitle": "Introduction to ML",
-"lessons": [
-{
-"lessonTitle": "What is Machine Learning?",
-"videoUrl": "https://example.com/video1.mp4",
-"duration": 10,
-"_id": "677c2d3e71cd6e7fd8524a3b"
-},
-{
-"lessonTitle": "History of ML",
-"videoUrl": "https://example.com/video2.mp4",
-"duration": 12,
-"_id": "677c2d3e71cd6e7fd8524a3c"
-},
-{
-"lessonTitle": "Types of Machine Learning",
-"videoUrl": "https://example.com/video3.mp4",
-"duration": 15,
-"_id": "677c2d3e71cd6e7fd8524a3d"
-},
-{
-"lessonTitle": "Applications of ML",
-"videoUrl": "https://example.com/video4.mp4",
-"duration": 10,
-"_id": "677c2d3e71cd6e7fd8524a3e"
-}
-],
-"id": "677c2d3e71cd6e7fd8524a3a"
-},
-{
-"sectionNumber": 2,
-"sectionTitle": "Basics of ML",
-"lessons": [
-{
-"lessonTitle": "What is Machine Learning?",
-"videoUrl": "https://example.com/video1.mp4",
-"duration": 10,
-"_id": "677c2d9ca882923d0fbc6af4"
-},
-{
-"lessonTitle": "History of ML",
-"videoUrl": "https://example.com/video2.mp4",
-"duration": 12,
-"_id": "677c2d9ca882923d0fbc6af5"
-},
-{
-"lessonTitle": "Types of Machine Learning",
-"videoUrl": "https://example.com/video3.mp4",
-"duration": 15,
-"_id": "677c2d9ca882923d0fbc6af6"
-},
-{
-"lessonTitle": "Applications of ML",
-"videoUrl": "https://example.com/video4.mp4",
-"duration": 10,
-"_id": "677c2d9ca882923d0fbc6af7"
-}
-],
-"id": "677c2d9ca882923d0fbc6af3"
-}
-],
-"quizzes": [],
-"createdAt": "2025-01-06T19:09:15.521Z",
-"updatedAt": "2025-01-06T19:23:08.427Z",
-"v": 2
-}
+    "status": "success",
+    "message": "Content added successfully",
+    "course": {
+        "id": "677c2a5bb75fd0225ac54004",
+        "title": "Machine Learning for Beginners",
+        "duration": 40,
+        "teacher": "Dr. John Doe",
+        "enrolledStudents": 50,
+        "description": "An introductory course to Machine Learning",
+        "objectives": "Learn the basics of ML, regression, classification, etc.",
+        "targetAudience": [
+            "Machine Learning",
+            "AI in Gaming"
+        ],
+        "language": "english",
+        "level": "beginner",
+        "price": 199,
+        "certificate": true,
+        "imageUrl": "https://example.com/course-image1.jpg",
+        "progress": 0,
+        "isActive": true,
+        "contents": [
+            {
+                "sectionNumber": 1,
+                "sectionTitle": "Introduction to ML",
+                "lessons": [
+                    {
+                        "lessonTitle": "What is Machine Learning?",
+                        "videoUrl": "https://example.com/video1.mp4",
+                        "duration": 10,
+                        "_id": "677c2d3e71cd6e7fd8524a3b"
+                    },
+                    {
+                        "lessonTitle": "History of ML",
+                        "videoUrl": "https://example.com/video2.mp4",
+                        "duration": 12,
+                        "_id": "677c2d3e71cd6e7fd8524a3c"
+                    },
+                    {
+                        "lessonTitle": "Types of Machine Learning",
+                        "videoUrl": "https://example.com/video3.mp4",
+                        "duration": 15,
+                        "_id": "677c2d3e71cd6e7fd8524a3d"
+                    },
+                    {
+                        "lessonTitle": "Applications of ML",
+                        "videoUrl": "https://example.com/video4.mp4",
+                        "duration": 10,
+                        "_id": "677c2d3e71cd6e7fd8524a3e"
+                    }
+                ],
+                "id": "677c2d3e71cd6e7fd8524a3a"
+            },
+            {
+                "sectionNumber": 2,
+                "sectionTitle": "Basics of ML",
+                "lessons": [
+                    {
+                        "lessonTitle": "What is Machine Learning?",
+                        "videoUrl": "https://example.com/video1.mp4",
+                        "duration": 10,
+                        "_id": "677c2d9ca882923d0fbc6af4"
+                    },
+                    {
+                        "lessonTitle": "History of ML",
+                        "videoUrl": "https://example.com/video2.mp4",
+                        "duration": 12,
+                        "_id": "677c2d9ca882923d0fbc6af5"
+                    },
+                    {
+                        "lessonTitle": "Types of Machine Learning",
+                        "videoUrl": "https://example.com/video3.mp4",
+                        "duration": 15,
+                        "_id": "677c2d9ca882923d0fbc6af6"
+                    },
+                    {
+                        "lessonTitle": "Applications of ML",
+                        "videoUrl": "https://example.com/video4.mp4",
+                        "duration": 10,
+                        "_id": "677c2d9ca882923d0fbc6af7"
+                    }
+                ],
+                "id": "677c2d9ca882923d0fbc6af3"
+            }
+        ],
+        "quizzes": [],
+        "createdAt": "2025-01-06T19:09:15.521Z",
+        "updatedAt": "2025-01-06T19:23:08.427Z",
+        "v": 2
+    }
 } 12. how to edit content
-PATCH: http://localhost:3000/api/edit-content/:id/:contentId (:id is course id, :content id is the content id)
+PATCH: http: //localhost:3000/api/edit-content/:id/:contentId (:id is course id, :content id is the content id)
 
 payload: {
-"sectionTitle": "section 1 edited",
-"lessons": [
-{
-"lessonTitle": "Ai maintenace edited",
-"videoUrl": "www.videiow.com",
-"duration": 12
-},
-{
-"lessonTitle": "Ai maintenace 2 edited",
-"videoUrl": "www.videiow.com",
-"duration": 12
-}
-]
+    "sectionTitle": "section 1 edited",
+    "lessons": [
+        {
+            "lessonTitle": "Ai maintenace edited",
+            "videoUrl": "www.videiow.com",
+            "duration": 12
+        },
+        {
+            "lessonTitle": "Ai maintenace 2 edited",
+            "videoUrl": "www.videiow.com",
+            "duration": 12
+        }
+    ]
 }
 
 result = {
-"status": "success",
-"message": "Content updated successfully",
-"course": {
+    "status": "success",
+    "message": "Content updated successfully",
+    "course": {
 "\_id": "6777a4827e49b646cf8f78f2",
-"title": "string edited",
-"duration": 10,
-"teacher": "string",
-"enrolledStudents": 45,
-"description": "string edited",
-"objectives": "string edited",
-"targetAudience": [
-"Machine Learning",
-"AI in Gaming"
-],
-"price": 45,
-"certificate": true,
-"progress": 0,
-"isActive": true,
-"contents": [
-{
-"sectionTitle": "section 1 edited",
-"lessons": [
-{
-"lessonTitle": "Ai maintenace edited",
-"videoUrl": "www.videiow.com",
-"duration": 12,
-"_id": "6777a833037ac99460da6501"
-},
-{
-"lessonTitle": "Ai maintenace 2 edited",
-"videoUrl": "www.videiow.com",
-"duration": 12,
-"_id": "6777a833037ac99460da6502"
-}
-],
+        "title": "string edited",
+        "duration": 10,
+        "teacher": "string",
+        "enrolledStudents": 45,
+        "description": "string edited",
+        "objectives": "string edited",
+        "targetAudience": [
+            "Machine Learning",
+            "AI in Gaming"
+        ],
+        "price": 45,
+        "certificate": true,
+        "progress": 0,
+        "isActive": true,
+        "contents": [
+            {
+                "sectionTitle": "section 1 edited",
+                "lessons": [
+                    {
+                        "lessonTitle": "Ai maintenace edited",
+                        "videoUrl": "www.videiow.com",
+                        "duration": 12,
+                        "_id": "6777a833037ac99460da6501"
+                    },
+                    {
+                        "lessonTitle": "Ai maintenace 2 edited",
+                        "videoUrl": "www.videiow.com",
+                        "duration": 12,
+                        "_id": "6777a833037ac99460da6502"
+                    }
+                ],
 "\_id": "6777a6d3037ac99460da64ee"
-}
-],
-"quizzes": [],
-"createdAt": "2025-01-03T08:49:06.091Z",
-"updatedAt": "2025-01-03T09:04:51.950Z",
+            }
+        ],
+        "quizzes": [],
+        "createdAt": "2025-01-03T08:49:06.091Z",
+        "updatedAt": "2025-01-03T09:04:51.950Z",
 "\_\_v": 3
-}
+    }
 }
 
 13. to delete a course
-    DELETE: http://localhost:3000/api/delete-course/:id
+    DELETE: http: //localhost:3000/api/delete-course/:id
 
 14. How to add quizes for each courses
-    POST: http://localhost:3000/api/courses/:courseId/quizzes
-    payload:
-    {
+    POST: http: //localhost:3000/api/courses/:courseId/quizzes
+    payload: {
     "questions": [
-    {
-    "questionText": "Is 2 an even number?",
-    "options": [
-    { "optionText": "Yes", "isCorrect": true },
-    { "optionText": "No", "isCorrect": false },
-    { "optionText": "Not sure", "isCorrect": false }
+        {
+            "questionText": "Is 2 an even number?",
+            "options": [
+                {
+                    "optionText": "Yes",
+                    "isCorrect": true
+                },
+                {
+                    "optionText": "No",
+                    "isCorrect": false
+                },
+                {
+                    "optionText": "Not sure",
+                    "isCorrect": false
+                }
+            ]
+        },
+        {
+            "questionText": "What is the capital of France?",
+            "options": [
+                {
+                    "optionText": "Paris",
+                    "isCorrect": true
+                },
+                {
+                    "optionText": "London",
+                    "isCorrect": false
+                },
+                {
+                    "optionText": "Berlin",
+                    "isCorrect": false
+                }
+            ]
+        }
     ]
-    },
-    {
-    "questionText": "What is the capital of France?",
-    "options": [
-    { "optionText": "Paris", "isCorrect": true },
-    { "optionText": "London", "isCorrect": false },
-    { "optionText": "Berlin", "isCorrect": false }
-    ]
-    }
-    ]
-    }
+}
 
 result: {
-"status": "success",
-"message": "Quiz added successfully",
-"quizId": "6777a8f8037ac99460da6508",
-"course": {
-"id": "6777a4827e49b646cf8f78f2",
-"title": "string edited",
-"duration": 10,
-"teacher": "string",
-"enrolledStudents": 45,
-"description": "string edited",
-"objectives": "string edited",
-"targetAudience": [
-"Machine Learning",
-"AI in Gaming"
-],
-"price": 45,
-"certificate": true,
-"progress": 0,
-"isActive": true,
-"contents": [
-{
-"sectionTitle": "section 1 edited",
-"lessons": [
-{
-"lessonTitle": "Ai maintenace edited",
-"videoUrl": "www.videiow.com",
-"duration": 12,
-"_id": "6777a833037ac99460da6501"
-},
-{
-"lessonTitle": "Ai maintenace 2 edited",
-"videoUrl": "www.videiow.com",
-"duration": 12,
-"_id": "6777a833037ac99460da6502"
-}
-],
+    "status": "success",
+    "message": "Quiz added successfully",
+    "quizId": "6777a8f8037ac99460da6508",
+    "course": {
+        "id": "6777a4827e49b646cf8f78f2",
+        "title": "string edited",
+        "duration": 10,
+        "teacher": "string",
+        "enrolledStudents": 45,
+        "description": "string edited",
+        "objectives": "string edited",
+        "targetAudience": [
+            "Machine Learning",
+            "AI in Gaming"
+        ],
+        "price": 45,
+        "certificate": true,
+        "progress": 0,
+        "isActive": true,
+        "contents": [
+            {
+                "sectionTitle": "section 1 edited",
+                "lessons": [
+                    {
+                        "lessonTitle": "Ai maintenace edited",
+                        "videoUrl": "www.videiow.com",
+                        "duration": 12,
+                        "_id": "6777a833037ac99460da6501"
+                    },
+                    {
+                        "lessonTitle": "Ai maintenace 2 edited",
+                        "videoUrl": "www.videiow.com",
+                        "duration": 12,
+                        "_id": "6777a833037ac99460da6502"
+                    }
+                ],
 "\_id": "6777a6d3037ac99460da64ee"
-}
-],
-"quizzes": [
-{
-"questions": [
-{
-"questionText": "Is 2 an even number?",
-"options": [
-{
-"optionText": "Yes",
-"isCorrect": true,
-"_id": "6777a8f8037ac99460da650b"
-},
-{
-"optionText": "No",
-"isCorrect": false,
-"_id": "6777a8f8037ac99460da650c"
-},
-{
-"optionText": "Not sure",
-"isCorrect": false,
-"_id": "6777a8f8037ac99460da650d"
-}
-],
+            }
+        ],
+        "quizzes": [
+            {
+                "questions": [
+                    {
+                        "questionText": "Is 2 an even number?",
+                        "options": [
+                            {
+                                "optionText": "Yes",
+                                "isCorrect": true,
+                                "_id": "6777a8f8037ac99460da650b"
+                            },
+                            {
+                                "optionText": "No",
+                                "isCorrect": false,
+                                "_id": "6777a8f8037ac99460da650c"
+                            },
+                            {
+                                "optionText": "Not sure",
+                                "isCorrect": false,
+                                "_id": "6777a8f8037ac99460da650d"
+                            }
+                        ],
 "\_id": "6777a8f8037ac99460da650a"
-},
-{
-"questionText": "What is the capital of France?",
-"options": [
-{
-"optionText": "Paris",
-"isCorrect": true,
-"_id": "6777a8f8037ac99460da650f"
-},
-{
-"optionText": "London",
-"isCorrect": false,
-"_id": "6777a8f8037ac99460da6510"
-},
-{
-"optionText": "Berlin",
-"isCorrect": false,
-"_id": "6777a8f8037ac99460da6511"
-}
-],
+                    },
+                    {
+                        "questionText": "What is the capital of France?",
+                        "options": [
+                            {
+                                "optionText": "Paris",
+                                "isCorrect": true,
+                                "_id": "6777a8f8037ac99460da650f"
+                            },
+                            {
+                                "optionText": "London",
+                                "isCorrect": false,
+                                "_id": "6777a8f8037ac99460da6510"
+                            },
+                            {
+                                "optionText": "Berlin",
+                                "isCorrect": false,
+                                "_id": "6777a8f8037ac99460da6511"
+                            }
+                        ],
 "\_id": "6777a8f8037ac99460da650e"
-}
-],
+                    }
+                ],
 "\_id": "6777a8f8037ac99460da6508"
-}
-],
-"createdAt": "2025-01-03T08:49:06.091Z",
-"updatedAt": "2025-01-03T09:08:08.741Z",
+            }
+        ],
+        "createdAt": "2025-01-03T08:49:06.091Z",
+        "updatedAt": "2025-01-03T09:08:08.741Z",
 "\_\_v": 4
-}
+    }
 }
 
 15. How to make student submit quizes
-    POST: http://localhost:3000/api/courses/:courseId/quizzes/:quizId/submit
+    POST: http: //localhost:3000/api/courses/:courseId/quizzes/:quizId/submit
 
 payload: {
-"answers": ["Yes", "Paris"] // this case sensitive
+    "answers": [
+        "Yes",
+        "Paris"
+    ] // this case sensitive
 }
 
 result = {
-"status": "success",
-"message": "Quiz submitted successfully",
-"score": 100
+    "status": "success",
+    "message": "Quiz submitted successfully",
+    "score": 100
 }
 
 second example
 
 payload: {
-"answers": ["Yes", "Lagos"]
+    "answers": [
+        "Yes",
+        "Lagos"
+    ]
 }
 
 result: {
-"status": "success",
-"message": "Quiz submitted successfully",
-"score": 50
+    "status": "success",
+    "message": "Quiz submitted successfully",
+    "score": 50
 }
 
 16. How to update user info
-    PATCH: http://localhost:3000/api/update/user
+    PATCH: http: //localhost:3000/api/update/user
     multipart/form-data
 
 
@@ -574,54 +629,54 @@ result: {
 
 17. How to watch a lesson and update progress
 
-PATCH: http://localhost:3000/api/courses/:courseId/sections/:sectionTitle/lessons/:lessonTitle/watched",
-example http://localhost:3000/api/courses/677c2a5bb75fd0225ac54004/sections/Introduction to ML/lessons/Applications of ML/watched
+PATCH: http: //localhost:3000/api/courses/:courseId/sections/:sectionTitle/lessons/:lessonTitle/watched",
+example http: //localhost:3000/api/courses/677c2a5bb75fd0225ac54004/sections/Introduction to ML/lessons/Applications of ML/watched
 
 result: {
-"status": "success",
-"message": "Lesson marked as watched",
-"sectionNumber": 1,
-"sectionTitle": "Introduction to ML",
-"lessonTitle": "Applications of ML",
-"sectionWatchedCount": 2, // this is numbers of lessons you have watched in section one
-"sectionTotalLessons": 4, // this is the total lessons available in section one
-"courseWatchedCount": 2, // this is the total number of lessons you have watched in this course
-"courseTotalLessons": 6, // this is the total number of lessons in the course
-"courseStatus": "active" //active means u havent completed the course, if status is completed then u have completed the course
+    "status": "success",
+    "message": "Lesson marked as watched",
+    "sectionNumber": 1,
+    "sectionTitle": "Introduction to ML",
+    "lessonTitle": "Applications of ML",
+    "sectionWatchedCount": 2, // this is numbers of lessons you have watched in section one
+    "sectionTotalLessons": 4, // this is the total lessons available in section one
+    "courseWatchedCount": 2, // this is the total number of lessons you have watched in this course
+    "courseTotalLessons": 6, // this is the total number of lessons in the course
+    "courseStatus": "active" //active means u havent completed the course, if status is completed then u have completed the course
 }
 
 18. How to get user progess on a course
-    GET: http://localhost:3000/api/courses/:courseId/progress
+    GET: http: //localhost:3000/api/courses/:courseId/progress
 
 result: {
-"status": "success",
-"progress": [
-{
-"sectionId": "677c2f30a882923d0fbc6b38",
-"sectionTitle": "Introduction to ML",
-"completedLessons": 2,
-"notCompletedLessons": 2,
-"totalLessons": 4,
-"sectionStatus": "in progress"
-},
-{
-"sectionId": "677c2f30a882923d0fbc6b3d",
-"sectionTitle": "section 1 edited",
-"completedLessons": 0,
-"notCompletedLessons": 2,
-"totalLessons": 2,
-"sectionStatus": "in progress"
-}
-],
-"courseStatus": "in progress",
-"totalCourses": 1, // this is the total number of courses you have enrolled in
-"totalCompletedCourses": 0, // this the total number of course u completed
-"totalLessonsInCourse": 6,
-"completedLessonsInCourse": 2
+    "status": "success",
+    "progress": [
+        {
+            "sectionId": "677c2f30a882923d0fbc6b38",
+            "sectionTitle": "Introduction to ML",
+            "completedLessons": 2,
+            "notCompletedLessons": 2,
+            "totalLessons": 4,
+            "sectionStatus": "in progress"
+        },
+        {
+            "sectionId": "677c2f30a882923d0fbc6b3d",
+            "sectionTitle": "section 1 edited",
+            "completedLessons": 0,
+            "notCompletedLessons": 2,
+            "totalLessons": 2,
+            "sectionStatus": "in progress"
+        }
+    ],
+    "courseStatus": "in progress",
+    "totalCourses": 1, // this is the total number of courses you have enrolled in
+    "totalCompletedCourses": 0, // this the total number of course u completed
+    "totalLessonsInCourse": 6,
+    "completedLessonsInCourse": 2
 }
 
 19. How to get single course
-GET: http://localhost:3000/api/courses/:courseId
+GET: http: //localhost:3000/api/courses/:courseId
 
 result: {
     "status": "success",
@@ -706,7 +761,7 @@ result: {
 
 20. How to forget password
 
-POST:  http://localhost:3000/api/forgot-password
+POST:  http: //localhost:3000/api/forgot-password
 
 
 payload : {
@@ -720,11 +775,10 @@ result: {
 
 21. how to reset password
 
-PATCH: http://localhost:3000/api/reset-password/:token
+PATCH: http: //localhost:3000/api/reset-password/:token
 
 payload: {
     "password": "newpassword",
-
 }
 
 result: {
@@ -735,7 +789,7 @@ result: {
 
 22. How to get jobs based on user interests
 
-Get http://localhost:3000/api/suggest-job/interest
+Get http: //localhost:3000/api/suggest-job/interest
 
 
 result: {
@@ -860,13 +914,11 @@ result: {
 
 23 How to chnage password
 
-http://localhost:3000/api/change-password
+http: //localhost:3000/api/change-password
 
 payload: {
-  
     "currentPassword": "18/67Ms/00226aa@@242",
     "newPassword": "18/67Ms/00226aa@@22"
-
 }
 
 result = {
