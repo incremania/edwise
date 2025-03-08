@@ -82,16 +82,22 @@ const createCourse = async (req, res) => {
 const editCourse = async (req, res) => {
   try {
     const courseId = req.params.id;
-    const updatedCourse = await Course.findByIdAndUpdate(courseId, req.body, {
+    const existingCourse = await Course.findById(courseId);
+
+    if (!existingCourse) {
+      return res.status(404).json({ status: "error", message: "Course not found" });
+    }
+
+    // Preserve existing contents if not provided in req.body
+    const updatedData = { ...req.body };
+    if (!req.body.contents) {
+      updatedData.contents = existingCourse.contents;
+    }
+
+    const updatedCourse = await Course.findByIdAndUpdate(courseId, updatedData, {
       new: true,
       runValidators: true,
     });
-
-    if (!updatedCourse) {
-      return res
-        .status(404)
-        .json({ status: "error", message: "Course not found" });
-    }
 
     res.status(200).json({
       status: "success",
@@ -99,58 +105,13 @@ const editCourse = async (req, res) => {
       course: updatedCourse,
     });
   } catch (error) {
-    console.log(error.message);
-    res
-      .status(400)
-      .json({ status: "error", message: "Failed to update course", error });
+    console.error(error.message);
+    res.status(400).json({ status: "error", message: "Failed to update course", error });
   }
 };
+
 
 const addContentToCourse = async (req, res) => {
-  try {
-    const courseId = req.params.id;
-    const { sectionTitle, lessons } = req.body;
-
-    // Find the course
-    const course = await Course.findById(courseId);
-    if (!course) {
-      return res
-        .status(404)
-        .json({ status: "error", message: "Course not found" });
-    }
-
-    // Manually assign sectionNumber before adding to contents
-    const newSection = {
-      sectionTitle,
-      lessons,
-      sectionNumber: course.contents.length + 1, // Assign sectionNumber based on existing sections
-    };
-
-    // Add the new section
-    course.contents.push(newSection);
-
-    // Save the course after modifying contents
-    await course.save();
-
-    res.status(200).json({
-      status: "success",
-      message: "Content added successfully",
-      course,
-    });
-  } catch (error) {
-    // Handle errors
-    const errorMessage = extractValidationErrors(error);
-
-    res.status(400).json({
-      status: "error",
-      message: "Failed to create course",
-      error: errorMessage,
-    });
-  }
-};
-
-
-const addContentsToCourse = async (req, res) => {
   try {
     const courseId = req.params.id;
     let sections = req.body; // Can be a single object or an array
@@ -199,43 +160,69 @@ const addContentsToCourse = async (req, res) => {
   }
 };
 
-// const editContentInCourse = async (req, res) => {
-//   try {
-//     const courseId = req.params.id;
-//     const contentId = req.params.contentId;
-//     const { sectionTitle, lessons } = req.body;
+const editContentInCourse = async (req, res) => {
+  try {
+    const courseId = req.params.id;
+    const contentId = req.params.contentId;
+    const { sectionTitle, lessons } = req.body;
 
-//     const course = await Course.findById(courseId);
-//     if (!course) {
-//       return res
-//         .status(404)
-//         .json({ status: "error", message: "Course not found" });
-//     }
+    const course = await Course.findById(courseId);
+    if (!course) {
+      return res
+        .status(404)
+        .json({ status: "error", message: "Course not found" });
+    }
 
-//     const content = course.contents.id(contentId);
-//     if (!content) {
-//       return res
-//         .status(404)
-//         .json({ status: "error", message: "Content not found" });
-//     }
+    const content = course.contents.id(contentId);
+    if (!content) {
+      return res
+        .status(404)
+        .json({ status: "error", message: "Content not found" });
+    }
 
-//     content.sectionTitle = sectionTitle || content.sectionTitle;
-//     content.lessons = lessons || content.lessons;
+    content.sectionTitle = sectionTitle || content.sectionTitle;
+    content.lessons = lessons || content.lessons;
 
-//     await course.save();
+    await course.save();
 
-//     res.status(200).json({
-//       status: "success",
-//       message: "Content updated successfully",
-//       course,
-//     });
-//   } catch (error) {
-//     console.log(error.message);
-//     res
-//       .status(400)
-//       .json({ status: "error", message: "Failed to update content", error });
-//   }
-// };
+    res.status(200).json({
+      status: "success",
+      message: "Content updated successfully",
+      course,
+    });
+  } catch (error) {
+    console.log(error.message);
+    res
+      .status(400)
+      .json({ status: "error", message: "Failed to update content", error });
+  }
+};
+
+const editMultipleContentsInCourse = async (req, res) => {
+  try {
+    const courseId = req.params.id;
+    const { contents } = req.body; // Expecting an array of content objects
+
+    const course = await Course.findById(courseId);
+    if (!course) {
+      return res.status(404).json({ status: "error", message: "Course not found" });
+    }
+
+    // Directly replace the contents array
+    course.contents = contents;
+
+    await course.save();
+
+    res.status(200).json({
+      status: "success",
+      message: "Contents updated successfully",
+      course,
+    });
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).json({ status: "error", message: "Failed to update contents", error });
+  }
+};
 
 const deleteCourse = async (req, res) => {
   try {
@@ -368,5 +355,5 @@ module.exports = {
   deleteCourse,
   addQuizToCourse,
   submitQuizAnswers,
-
+  editMultipleContentsInCourse,
 };
