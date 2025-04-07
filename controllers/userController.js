@@ -1,8 +1,46 @@
 const User = require("../models/UserModel");
 const Course = require("../models/CourseModel");
 const Job = require("../models/JobModel");
+const bcrypt = require("bcryptjs");
 const cloudinary = require("cloudinary").v2;
 const fs = require("fs");
+
+const getUserCount = async (req, res) => {
+  try {
+    const userCount = await User.countDocuments({ role: "user" });
+
+    res.status(200).json({
+      status: "success",
+      message: "User count retrieved successfully",
+      count: userCount,
+    });
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).json({
+      status: "error",
+      message: "Failed to retrieve user count",
+      error,
+    });
+  }
+};
+
+const getAllUsers = async (req, res) => {
+  try {
+    const users = await User.find(); // Fetch all users
+
+    res.status(200).json({
+      status: "success",
+      totalUsers: users.length,
+      users,
+    });
+  } catch (error) {
+    res.status(500).json({
+      status: "error",
+      message: "Failed to retrieve users",
+      error: error.message,
+    });
+  }
+};
 
 const getUserDetails = async (req, res) => {
   try {
@@ -410,8 +448,6 @@ const getUserCourseProgress = async (req, res) => {
 };
 
 
-
-
 const markLessonWatched = async (req, res) => {
   try {
     const userId = req.user.userId;
@@ -463,43 +499,77 @@ const markLessonWatched = async (req, res) => {
     }
 
     lesson.watched = true;
+    lesson.watchedAt = new Date();
 
-    const sectionWatchedCount = section.lessons.filter(
+    // Key change: Use findOneAndUpdate to update the document directly
+    await User.findOneAndUpdate(
+      {
+        _id: userId,
+        "progress.courseId": courseId,
+        "progress.sections.sectionTitle": sectionTitle,
+        "progress.sections.lessons.lessonTitle": lessonTitle,
+      },
+      {
+        $set: {
+          "progress.$[course].sections.$[section].lessons.$[lesson].watched": true,
+          "progress.$[course].sections.$[section].lessons.$[lesson].watchedAt": new Date(),
+        },
+      },
+      {
+        arrayFilters: [
+          { "course.courseId": courseId },
+          { "section.sectionTitle": sectionTitle },
+          { "lesson.lessonTitle": lessonTitle },
+        ],
+        new: true, // Return the updated document
+      }
+    );
+
+    const updatedUser = await User.findById(userId); //refetch the user to calculate the updated progress.
+
+    const updatedCourseProgress = updatedUser.progress.find(
+      (progress) => progress.courseId.toString() === courseId
+    );
+
+    const updatedSection = updatedCourseProgress.sections.find(
+      (sec) => sec.sectionTitle === sectionTitle
+    );
+
+    const sectionWatchedCount = updatedSection.lessons.filter(
       (les) => les.watched
     ).length;
-    const sectionTotalLessons = section.lessons.length;
+    const sectionTotalLessons = updatedSection.lessons.length;
 
-    const courseWatchedCount = courseProgress.sections.reduce(
+    const courseWatchedCount = updatedCourseProgress.sections.reduce(
       (total, sec) => total + sec.lessons.filter((les) => les.watched).length,
       0
     );
-    const courseTotalLessons = courseProgress.sections.reduce(
+    const courseTotalLessons = updatedCourseProgress.sections.reduce(
       (total, sec) => total + sec.lessons.length,
       0
     );
 
-    const allLessonsWatched = courseProgress.sections.every((sec) =>
+    const allLessonsWatched = updatedCourseProgress.sections.every((sec) =>
       sec.lessons.every((les) => les.watched)
     );
 
-    courseProgress.status = allLessonsWatched ? "completed" : "active";
+    updatedCourseProgress.status = allLessonsWatched ? "completed" : "active";
 
-    await user.save();
+    await updatedUser.save();
 
     res.status(200).json({
       status: "success",
       message: "Lesson marked as watched",
-      sectionNumber:
-        courseProgress.sections.findIndex(
+      sectionNumber: updatedCourseProgress.sections.findIndex(
           (sec) => sec.sectionTitle === sectionTitle
-        ) + 1, 
-      sectionTitle: section.sectionTitle,
+        ) + 1,
+      sectionTitle: updatedSection.sectionTitle,
       lessonTitle: lesson.lessonTitle,
       sectionWatchedCount,
       sectionTotalLessons,
       courseWatchedCount,
       courseTotalLessons,
-      courseStatus: courseProgress.status,
+      courseStatus: updatedCourseProgress.status,
     });
   } catch (error) {
     console.error(error);
@@ -508,8 +578,67 @@ const markLessonWatched = async (req, res) => {
 };
 
 
+/// Super Admin
+
+const createAdmin = async (req, res) => {
+  try {
+    const { name, email } = req.body;
+
+    // Check if admin already exists
+    const existingAdmin = await User.findOne({ email });
+    if (existingAdmin) {
+      return res.status(400).json({ status: "error", message: "Admin already exists" });
+    }
+
+    // Create new admin
+    const hashedPassword = await bcrypt.hash("12345678", 10); // Default password
+    const newAdmin = new User({
+      name,
+      email,
+      password: hashedPassword,
+      role: "admin",
+    });
+
+    await newAdmin.save();
+
+    res.status(201).json({ 
+      status: "success", 
+      message: "Admin created successfully", 
+      admin: newAdmin 
+    });
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).json({ status: "error", message: "Internal Server Error" });
+  }
+};
+
+const toggleUserStatus = async (req, res) => {
+  try {
+    const userId = req.params.id;
+
+    // Find user by ID
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ status: "error", message: "User not found" });
+    }
+
+    // Toggle the user's status
+    user.isActive = !user.isActive;
+    await user.save();
+
+    res.status(200).json({
+      status: "success",
+      message: `User ${user.isActive ? "enabled" : "disabled"} successfully`,
+      user,
+    });
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).json({ status: "error", message: "Internal Server Error" });
+  }
+};
 
 module.exports = {
+  getUserCount,
   enrollUser,
   getUserDetails,
   getUserEnrolledCourses,
@@ -518,4 +647,7 @@ module.exports = {
   markLessonWatched,
   updateUserDetails,
   suggestJobsBasedOnInterests,
+  createAdmin,
+  toggleUserStatus,
+  getAllUsers
 };
