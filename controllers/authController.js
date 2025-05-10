@@ -125,28 +125,28 @@ const register = async (req, res) => {
       }
     }
 
-    if (interests.length === 0) {
-      return res
-        .status(400)
-        .json({ error: "Please select at least one interest." });
-    }
+    // if (interests.length === 0) {
+    //   return res
+    //     .status(400)
+    //     .json({ error: "Please select at least one interest." });
+    // }
 
-    const validInterests = [
-      "Machine Learning",
-      "Robotics",
-      "Natural Language Processing (NLP)",
-      "Cognitive Computing",
-      "AI in Gaming",
-    ];
+    // const validInterests = [
+    //   "Machine Learning",
+    //   "Robotics",
+    //   "Natural Language Processing (NLP)",
+    //   "Cognitive Computing",
+    //   "AI in Gaming",
+    // ];
 
-    const invalidInterests = interests.filter(
-      (interest) => !validInterests.includes(interest)
-    );
-    if (invalidInterests.length > 0) {
-      return res.status(400).json({
-        error: `${invalidInterests.join(", ")} is/are not valid interest(s)`,
-      });
-    }
+    // const invalidInterests = interests.filter(
+    //   (interest) => !validInterests.includes(interest)
+    // );
+    // if (invalidInterests.length > 0) {
+    //   return res.status(400).json({
+    //     error: `${invalidInterests.join(", ")} is/are not valid interest(s)`,
+    //   });
+    // }
 
     const existingEmail = await User.findOne({ email });
     if (existingEmail) {
@@ -212,6 +212,10 @@ const login = async (req, res) => {
 
     if (!user) {
       return res.status(400).json({ error: "Email or password incorrect" });
+    }
+
+    if (!user.isActive) {
+      return res.status(403).json({ error: "Account is deactivated. Please contact support." }); 
     }
 
     const isMatch = await user.comparePassword(password);

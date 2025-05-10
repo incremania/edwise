@@ -9,14 +9,18 @@ const UserSchema = new mongoose.Schema(
     },
     email: {
       type: String,
-      required: [true, "Email is required"],
-      validate: [isEmail, "Please provide a valid email"],
+      required: [true, 'Email is required'],
+      validate: [isEmail, 'Please provide a valid email'],
       unique: true,
+    },
+    isActive: {
+      type: Boolean,
+      default: true,
     },
     password: {
       type: String,
-      required: [true, "Password is required"],
-      minlength: [9, "Password must be more than 8 characters"],
+      required: [true, 'Password is required'],
+      minlength: [8, 'Password must be more than 7 characters'],
       validate: [
         {
           validator: function (value) {
@@ -27,7 +31,7 @@ const UserSchema = new mongoose.Schema(
             );
           },
           message:
-            "Password must contain at least one uppercase letter, one number, and one special character",
+            'Password must contain at least one uppercase letter, one number, and one special character',
         },
       ],
     },
@@ -40,34 +44,34 @@ const UserSchema = new mongoose.Schema(
     role: {
       type: String,
       enum: {
-        values: ["admin", "user"],
-        message: "{VALUE} is not a valid role.",
+        values: ['admin', 'user', 'lecturer', 'super_admin'],
+        message: '{VALUE} is not a valid role.',
       },
-      default: "user",
+      default: 'user',
     },
     interests: {
       type: [String],
       enum: {
         values: [
-          "Machine Learning",
-          "Robotics",
-          "Natural Language Processing (NLP)",
-          "Cognitive Computing",
-          "AI in Gaming",
+          'Machine Learning',
+          'Robotics',
+          'Natural Language Processing (NLP)',
+          'Cognitive Computing',
+          'AI in Gaming',
         ],
-        message: "{VALUE} is not a valid interest.",
+        message: '{VALUE} is not a valid interest.',
       },
-      required: true,
+      required: false,
     },
     enrolledCourses: [
       {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "Course",
+        ref: 'Course',
       },
     ],
     progress: [
       {
-        courseId: { type: mongoose.Schema.Types.ObjectId, ref: "Course" },
+        courseId: { type: mongoose.Schema.Types.ObjectId, ref: 'Course' },
         sections: [
           {
             sectionTitle: String,
@@ -75,11 +79,19 @@ const UserSchema = new mongoose.Schema(
               {
                 lessonTitle: String,
                 watched: { type: Boolean, default: false },
+                watchedAt: { type: Date },
               },
             ],
           },
         ],
-        status: { type: String, default: "not started" },
+        quizzes: [
+          {
+            quizId: { type: mongoose.Schema.Types.ObjectId, ref: 'Course.quizzes' }, // Crucial: Reference to quiz in Course
+            score: { type: Number, default: 0 },
+            attempts: { type: Number, default: 0 },
+          },
+        ],
+        status: { type: String, default: 'not started' },
       },
     ],
   },

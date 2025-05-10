@@ -1,4 +1,6 @@
 const Course = require("../models/CourseModel");
+const User = require("../models/UserModel");
+
 const mongoose = require('mongoose')
 const { extractValidationErrors } = require("../utils/handleError");
 
@@ -13,14 +15,13 @@ const getSingleCourse = async (req, res) => {
 
     res.status(200).json({ status: "success", course})
   } catch (error) {
-      console.log(error.message);
     res.status(500).json({ message: "Internal Server Error" });
   }
 }
 
 const getAllCourses = async (req, res) => {
   try {
-    const allCourses = await Course.find({});
+    const allCourses = await Course.find({}).populate('lecturer').sort({ createdAt: -1 }); // Sort by createdAt in descending order
 
     if (allCourses.length === 0) {
       return res.status(404).json({ message: "No courses found" });
@@ -28,15 +29,42 @@ const getAllCourses = async (req, res) => {
 
     res.status(200).json({ status: "success", allCourses });
   } catch (error) {
-    console.log(error.message);
     res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+///Lecturer
+const getLecturerCourses = async (req, res) => {
+  try {
+    // Ensure the authenticated user is a lecturer
+    if (!req.user || req.user.role !== "lecturer") {
+      return res.status(403).json({
+        status: "error",
+        message: "Access denied. Only lecturers can view their courses.",
+      });
+    }
+
+    const lecturerId = req.user.userId; // Get lecturer's ID from authenticated user
+    const courses = await Course.find({ lecturer: lecturerId }).sort({ createdAt: -1 });
+
+    res.status(200).json({
+      status: "success",
+      message: "Courses retrieved successfully",
+      courses,
+    });
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).json({
+      status: "error",
+      message: "Failed to retrieve courses",
+      error,
+    });
   }
 };
 
 const getSuggestedCoursesForUser = async (req, res) => {
   try {
     const interests = req.user.interests; 
-    console.log(interests);
 
     if (!interests || interests.length === 0) {
       return res
@@ -50,7 +78,6 @@ const getSuggestedCoursesForUser = async (req, res) => {
 
     res.status(200).json({ status: "success", suggestedCourses });
   } catch (error) {
-    console.log(error.message);
     res.status(500).json({ message: "Internal Server Error" });
   }
 };
@@ -58,7 +85,20 @@ const getSuggestedCoursesForUser = async (req, res) => {
 
 const createCourse = async (req, res) => {
   try {
-    const newCourse = new Course(req.body);
+    // Ensure only lecturers can create courses
+    if (req.user.role !== "lecturer") {
+      return res.status(403).json({
+        status: "error",
+        message: "Only lecturers can create courses",
+      });
+    }
+
+    // Create new course and assign lecturerId automatically
+    const newCourse = new Course({
+      ...req.body,
+      lecturer: req.user.userId,
+    });
+
     await newCourse.save();
 
     res.status(201).json({
@@ -67,8 +107,6 @@ const createCourse = async (req, res) => {
       course: newCourse,
     });
   } catch (error) {
-    console.log(error.message);
-
     const errorMessage = extractValidationErrors(error);
 
     res.status(400).json({
@@ -78,6 +116,7 @@ const createCourse = async (req, res) => {
     });
   }
 };
+
 
 const editCourse = async (req, res) => {
   try {
@@ -191,7 +230,6 @@ const editContentInCourse = async (req, res) => {
       course,
     });
   } catch (error) {
-    console.log(error.message);
     res
       .status(400)
       .json({ status: "error", message: "Failed to update content", error });
@@ -240,7 +278,6 @@ const deleteCourse = async (req, res) => {
       message: "Course deleted successfully",
     });
   } catch (error) {
-    console.log(error.message);
     res
       .status(500)
       .json({ status: "error", message: "Failed to delete course", error });
@@ -249,7 +286,6 @@ const deleteCourse = async (req, res) => {
 
 
 // quiz
-
 const addQuizToCourse = async (req, res) => {
   try {
     const { courseId } = req.params;
@@ -290,20 +326,34 @@ const addQuizToCourse = async (req, res) => {
 
 const submitQuizAnswers = async (req, res) => {
   try {
+    const userId = req.user.userId;
     const { courseId, quizId } = req.params;
     const { answers } = req.body;
 
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    const courseProgress = user.progress.find(
+      (progress) => progress.courseId.toString() === courseId
+    );
+    if (!courseProgress) {
+      return res.status(404).json({ message: 'Course not found in user progress' });
+    }
 
     const course = await Course.findById(courseId);
     if (!course) {
-      return res.status(404).json({ message: "Course not found" });
+      return res.status(404).json({ message: 'Course not found' });
     }
 
-    const quiz = course.quizzes.id(quizId.toString());
+    const quiz = course.quizzes.id(quizId);
     if (!quiz) {
-      return res.status(404).json({ message: "Quiz not found" });
+      return res.status(404).json({ message: 'Quiz not found in course' });
     }
 
+    if (!quiz.published) {
+      return res.status(400).json({ message: 'Quiz is not published yet' });
+    }
 
     if (answers.length !== quiz.questions.length) {
       return res.status(400).json({
@@ -314,10 +364,7 @@ const submitQuizAnswers = async (req, res) => {
     let score = 0;
     quiz.questions.forEach((question, index) => {
       const selectedOption = answers[index];
-      if (!selectedOption) {
-        console.warn(`No answer provided for question at index ${index}`);
-        return; 
-      }
+      if (!selectedOption) return;
 
       const correctOption = question.options.find((opt) => opt.isCorrect);
       if (correctOption && correctOption.optionText === selectedOption) {
@@ -325,22 +372,132 @@ const submitQuizAnswers = async (req, res) => {
       }
     });
 
- 
     const percentage = Math.ceil((score / quiz.questions.length) * 100);
 
+    // Update user quiz score and attempts 
+    const userQuiz = courseProgress.quizzes.find((q) => q.quizId.toString() === quizId);
+    if (userQuiz) {
+        if (!userQuiz.score || percentage > userQuiz.score) {
+          userQuiz.score = percentage;
+        }
+        userQuiz.attempts = userQuiz.attempts + 1;
+        userQuiz.quizId = quizId;
+    } else {
+        courseProgress.quizzes.push({
+            score: percentage,
+            attempts: 1,
+            quizId: quizId
+        });
+    }
+
+    await user.save();
+
     res.status(200).json({
-      status: "success",
-      message: "Quiz submitted successfully",
+      status: 'success',
+      message: 'Quiz submitted successfully',
       score: percentage,
     });
   } catch (error) {
-  
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
+};
+
+
+const editQuiz = async (req, res) => {
+  try {
+    const { courseId, quizId } = req.params;
+    const { questions } = req.body;
+
+    const course = await Course.findById(courseId);
+    if (!course) {
+      return res.status(404).json({ message: "Course not found" });
+    }
+
+    const quiz = course.quizzes.id(quizId);
+    if (!quiz) {
+      return res.status(404).json({ message: "Quiz not found" });
+    }
+
+    if (quiz.published) {
+      return res.status(403).json({ message: "Quiz cannot be edited after publishing" });
+    }
+
+    quiz.questions = questions;
+    await course.save();
+
+    res.status(200).json({
+      status: "success",
+      message: "Quiz updated successfully",
+      updatedQuiz: quiz,
+    });
+  } catch (error) {
     res.status(500).json({ message: "Internal Server Error" });
   }
 };
 
 
 
+const deleteQuiz = async (req, res) => {
+  try {
+    const { courseId, quizId } = req.params;
+
+    const course = await Course.findById(courseId);
+    if (!course) {
+      return res.status(404).json({ message: "Course not found" });
+    }
+
+    const quizIndex = course.quizzes.findIndex((quiz) => quiz._id.toString() === quizId);
+    if (quizIndex === -1) {
+      return res.status(404).json({ message: "Quiz not found" });
+    }
+
+    if (course.quizzes[quizIndex].published) {
+      return res.status(403).json({ message: "Quiz cannot be deleted after publishing" });
+    }
+
+    course.quizzes.splice(quizIndex, 1);
+    await course.save();
+
+    res.status(200).json({
+      status: "success",
+      message: "Quiz deleted successfully",
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+
+const publishQuiz = async (req, res) => {
+  try {
+    const { courseId, quizId } = req.params;
+
+    const course = await Course.findById(courseId);
+    if (!course) {
+      return res.status(404).json({ message: "Course not found" });
+    }
+
+    const quiz = course.quizzes.id(quizId);
+    if (!quiz) {
+      return res.status(404).json({ message: "Quiz not found" });
+    }
+
+    if (quiz.published) {
+      return res.status(400).json({ message: "Quiz is already published" });
+    }
+
+    quiz.published = true;
+    await course.save();
+
+    res.status(200).json({
+      status: "success",
+      message: "Quiz has been published successfully",
+      quiz,
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
 
 
 
@@ -351,9 +508,13 @@ module.exports = {
   createCourse,
   editCourse,
   addContentToCourse,
+  editMultipleContentsInCourse,
   editContentInCourse,
   deleteCourse,
   addQuizToCourse,
   submitQuizAnswers,
-  editMultipleContentsInCourse,
+  editQuiz, 
+  deleteQuiz,
+  publishQuiz,
+  getLecturerCourses,
 };

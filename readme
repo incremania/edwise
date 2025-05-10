@@ -15,6 +15,9 @@ PATCH: http: //localhost:3000/api/edit-content/:id/:contentId
 DELETE: http: //localhost:3000/api/delete-course/:id
 POST: http: //localhost:3000/api/courses/:courseId/quizzes
 POST: http: //localhost:3000/api/courses/:courseId/quizzes/:quizId/submit
+PATCH http: //localhost:3000/api/courses/:courseId/quizzes/:quizId/publish
+PUT http: //localhost:3000/api/courses/:courseId/quizzes/:quizId
+DELETE http: //localhost:3000/api/courses/:courseId/quizzes/:quizId
 PATCH: http: //localhost:3000/api/update/user
 PATCH: http: //localhost:3000/api/courses/:courseId/sections/:sectionTitle/lessons/:lessonTitle/watched",
 GET:  http: //localhost:3000/api/courses/:courseId/progress
@@ -137,7 +140,6 @@ payload: {
     "title": "string",
     "duration": 10,
     "enrolledStudents": 45,
-    "teacher": "string",
     "targetAudience": [
         "Machine Learning",
         "AI in Gaming"
@@ -151,7 +153,7 @@ result: {
     "course": {
         "title": "string",
         "duration": 10,
-        "teacher": "string",
+        "lecturer": {}, // lecturer object(the login user which is now the lecturer)
         "enrolledStudents": 45, //this increments when user enroll in course
         "description": "string",
         "objectives": "string",
@@ -181,7 +183,6 @@ result: {
     "title": "string edited",
     "duration": 10,
     "enrolledStudents": 45,
-    "teacher": "string",
     "targetAudience": [
         "Machine Learning",
         "AI in Gaming"
@@ -195,7 +196,7 @@ result = {
 "\_id": "6777a4827e49b646cf8f78f2",
         "title": "string edited",
         "duration": 10,
-        "teacher": "string",
+        "lecturer": {}, // lecturer object(the login user which is now the lecturer)
         "enrolledStudents": 45,
         "description": "string edited",
         "objectives": "string edited",
@@ -282,7 +283,7 @@ result: {
         "id": "677c2a5bb75fd0225ac54004",
         "title": "Machine Learning for Beginners",
         "duration": 40,
-        "teacher": "Dr. John Doe",
+        "lecturer": {}, // lecturer object(the login user which is now the lecturer)
         "enrolledStudents": 50,
         "description": "An introductory course to Machine Learning",
         "objectives": "Learn the basics of ML, regression, classification, etc.",
@@ -392,7 +393,7 @@ result = {
 "\_id": "6777a4827e49b646cf8f78f2",
         "title": "string edited",
         "duration": 10,
-        "teacher": "string",
+        "lecturer": {}, // lecturer object(the login user which is now the lecturer)
         "enrolledStudents": 45,
         "description": "string edited",
         "objectives": "string edited",
@@ -483,7 +484,7 @@ result: {
         "id": "6777a4827e49b646cf8f78f2",
         "title": "string edited",
         "duration": 10,
-        "teacher": "string",
+        "lecturer": {}, // lecturer object(the login user which is now the lecturer)
         "enrolledStudents": 45,
         "description": "string edited",
         "objectives": "string edited",
@@ -601,7 +602,81 @@ result: {
     "score": 50
 }
 
-16. How to update user info
+16 To delete a quiz
+DELETE: http: //localhost:3000/api/:courseId/quizzes/:quizId
+
+Response
+
+Success (200 OK)
+{
+    "status": "success",
+    "message": "Quiz deleted successfully"
+}
+Error (404 Not Found)
+{
+    "message": "Course not found" // or "Quiz not found"
+}   
+
+17 To edit a quiz
+PUT: http: //localhost:3000/api/:courseId/quizzes/:quizId
+
+payload: {
+    "questions": [
+      {
+        "questionText": "What is 2 + 2?",
+        "options": [
+          { "optionText": "3", "isCorrect": false },
+          { "optionText": "4", "isCorrect": true }
+        ]
+      },
+      {
+        "questionText": "What is the capital of France?",
+        "options": [
+          { "optionText": "Berlin", "isCorrect": false },
+          { "optionText": "Paris", "isCorrect": true }
+        ]
+      }
+    ]
+  }
+
+  Response
+
+  Success (200 OK)
+  {
+    "status": "success",
+    "message": "Quiz updated successfully",
+    "updatedQuiz": { /* updated quiz data */ }
+  }
+
+  Error (404 Not Found)
+  {
+    "message": "Course not found" // or "Quiz not found"
+  }
+
+
+18 To publish a quiz
+PATCH: http: //localhost:3000/api/:courseId/quizzes/:quizId/publish
+
+Response
+
+Success (200 OK)
+{
+  "status": "success",
+  "message": "Quiz has been published successfully",
+  "quiz": { /* quiz that is published */ }
+}
+
+Error (404 Not Found)
+{
+  "message": "Course not found" // or "Quiz not found"
+}
+
+Error (400 Bad Request)
+{
+  "message": "Quiz is already published"
+}
+
+19. How to update user info
     PATCH: http: //localhost:3000/api/update/user
     multipart/form-data
 
@@ -627,7 +702,7 @@ result: {
     }
 }
 
-17. How to watch a lesson and update progress
+20. How to watch a lesson and update progress
 
 PATCH: http: //localhost:3000/api/courses/:courseId/sections/:sectionTitle/lessons/:lessonTitle/watched",
 example http: //localhost:3000/api/courses/677c2a5bb75fd0225ac54004/sections/Introduction to ML/lessons/Applications of ML/watched
@@ -645,7 +720,7 @@ result: {
     "courseStatus": "active" //active means u havent completed the course, if status is completed then u have completed the course
 }
 
-18. How to get user progess on a course
+21. How to get user progess on a course
     GET: http: //localhost:3000/api/courses/:courseId/progress
 
 result: {
@@ -675,7 +750,7 @@ result: {
     "completedLessonsInCourse": 2
 }
 
-19. How to get single course
+22. How to get single course
 GET: http: //localhost:3000/api/courses/:courseId
 
 result: {
@@ -684,7 +759,7 @@ result: {
         "_id": "677c2a5bb75fd0225ac54004",
         "title": "Machine Learning for Beginners",
         "duration": 40,
-        "teacher": "Dr. John Doe",
+        "lecturer": {}, // lecturer object(the login user which is now the lecturer)
         "enrolledStudents": 50,
         "description": "An introductory course to Machine Learning",
         "objectives": "Learn the basics of ML, regression, classification, etc.",
@@ -759,7 +834,7 @@ result: {
 }
 
 
-20. How to forget password
+23. How to forget password
 
 POST:  http: //localhost:3000/api/forgot-password
 
@@ -773,7 +848,7 @@ result: {
     "message": "Password reset link sent to your email"
 }
 
-21. how to reset password
+24. how to reset password
 
 PATCH: http: //localhost:3000/api/reset-password/:token
 
@@ -787,7 +862,7 @@ result: {
 }
 
 
-22. How to get jobs based on user interests
+25. How to get jobs based on user interests
 
 Get http: //localhost:3000/api/suggest-job/interest
 
@@ -903,7 +978,7 @@ result: {
                 "Leadership"
             ],
             "link": "https://www.indeed.com/jobs?q=Ai+Gaming&l=Kentucky&from=sug&vjk=a9cb87faee723592",
-            "category": "AI in Gaming",
+            "ca gory": "AI in Gaming",
             "__v": 0,
             "createdAt": "2025-01-03T08:18:46.916Z",
             "updatedAt": "2025-01-03T08:18:46.916Z"
@@ -912,7 +987,7 @@ result: {
 }
 
 
-23 How to chnage password
+26 How to chnage password
 
 http: //localhost:3000/api/change-password
 
@@ -923,4 +998,101 @@ payload: {
 
 result = {
     "message": "Password changed successfully."
+}
+
+27 Get all user count 
+
+Get http: //localhost:3000/api/total-students
+
+result: {
+    "status": "success",
+    "message": "User count retrieved successfully",
+    "count": userCount,
+}
+
+
+///////////// New APIS
+
+1. POST /api/create-admin
+
+payload: {
+    "name": "New Admin",
+    "email": "admin@example.com"
+}
+
+result: {
+    "status": "success",
+    "message": "Admin created successfully",
+    "admin": {
+        "fullName": "okiki",
+        "email": "emailkd@rfrrrfet4.cf",
+        "interests": [
+            "Machine Learning"
+        ],
+        "role": "admin",
+        "isActive": true,
+    }
+}
+  
+
+2. PATCH /api/users/:id/toggle-status 
+note: id is the admin id to enable or disable
+
+result: {
+    "status": "success",
+    "message": "User disabled successfully", // User enabled successfully
+    "user": {
+        "fullName": "okiki",
+        "email": "emailkd@rfrrrfet4.cf",
+        "interests": [
+            "Machine Learning"
+        ],
+        "role": "admin", // any role of user that is toggled
+        "isActive": false,
+    }
+}
+
+3.  GET /api/lecturer/courses 
+
+result: {
+    "status": "success",
+    "message": "Courses retrieved successfully",
+    courses, //all of all courses similar with all-course api result
+}
+
+4. GET /api/users
+
+result: {
+      status: "success",
+      totalUsers: 10, // Number all users fetched
+      users: users list,
+}
+
+5. GET /api/users/courses
+
+//if data is empty
+result: {
+     status: 'success', 
+     message: 'User has no enrolled courses', 
+     courses: [] 
+}
+
+// If data exist
+result: { 
+    status: 'success', 
+    courses: [] //course data 
+}
+
+6. GET /api/users/courses/:courseId
+
+// If course is not found
+result: { 
+    status: 'error',
+    message: 'Course not found in user\'s enrolled courses' 
+}
+
+// If course is available 
+result: { 
+    status: 'success', 
+    course: {} // course information
 }
